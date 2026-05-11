@@ -82,6 +82,7 @@ DISKS                    | Comma-separated list of disks for baremetal disk deta
 DISABLE_SSL_VERIFICATION       | (added upstream — review description) | enum | False |
 DISABLE_SSL_VERIFICATION       | (added upstream — review description) | enum | False |
 DISABLE_SSL_VERIFICATION       | See upstream change for details | enum | False |
+TEST_TIMEOUT                   | See upstream change for details | enum | 300 |
 {{% alert title="Note" %}}In case of using custom metrics profile or alerts profile when `CAPTURE_METRICS` or `ENABLE_ALERTS` is enabled, mount the metrics profile from the host on which the container is run using podman/docker under `/home/krkn/kraken/config/metrics-aggregated.yaml` and `/home/krkn/kraken/config/alerts`. {{% /alert %}}
  For example:
 ```bash
