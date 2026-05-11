@@ -91,6 +91,7 @@ jobs:
           python3 - <<'EOF'
           import sys, os
           sys.path.insert(0, '/tmp/krkn-docs-bot')
+          sys.path.insert(0, '/tmp/krkn-docs-bot/bot')
           from bot.detector import detect_from_diff
           from bot.generator import generate_updated_tab
 
