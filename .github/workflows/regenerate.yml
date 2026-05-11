@@ -71,6 +71,10 @@ jobs:
             // Also get the PR's head branch name for committing back
             core.setOutput('head_branch', pr.data.head.ref);
 
+      - name: Clone bot repo for detector/generator modules
+        run: |
+          git clone https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/Aditya-ad48/krkn-docs-bot.git /tmp/krkn-docs-bot
+
       - name: Decode diff and run regeneration
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -80,16 +84,14 @@ jobs:
           # Decode the stored diff
           echo "${{ steps.extract.outputs.diff_b64 }}" | base64 -d > /tmp/upstream.diff
 
-          UPSTREAM_FILE="${{ steps.extract.outputs.upstream_file }}"
           echo "Upstream file: $UPSTREAM_FILE"
           cat /tmp/upstream.diff
 
-          # The current tab file is already in the checkout (PR branch)
-          # Map upstream file → tab file path
+          # Run the regeneration using bot code from the cloned repo
           python3 - <<'EOF'
-          import sys, os, base64
-          sys.path.insert(0, '.')
-          from bot.detector import detect_from_diff, UPSTREAM_TO_TAB
+          import sys, os
+          sys.path.insert(0, '/tmp/krkn-docs-bot')
+          from bot.detector import detect_from_diff
           from bot.generator import generate_updated_tab
 
           upstream_file = os.environ.get('UPSTREAM_FILE', '')
@@ -103,15 +105,17 @@ jobs:
               current = f.read()
 
           all_params = [cf.name for cf in result.changed_fields] + [
-              "TOTAL_CHAOS_DURATION", "NODE_CPU_CORE", "NODE_CPU_PERCENTAGE",
-              "NAMESPACE", "NODE_SELECTOR", "TAINTS", "NUMBER_OF_NODES", "IMAGE",
+              "ACTION", "LABEL_SELECTOR", "EXCLUDE_LABEL", "NODE_NAME",
+              "INSTANCE_COUNT", "RUNS", "CLOUD_TYPE", "TIMEOUT", "DURATION",
+              "KUBE_CHECK", "PARALLEL", "VERIFY_SESSION", "SKIP_OPENSHIFT_CHECKS",
+              "BMC_USER", "BMC_PASSWORD", "BMC_ADDR", "DISKS", "DISABLE_SSL_VERIFICATION",
           ]
           updated = generate_updated_tab(current, result.changed_fields, result.scenario, all_params)
 
           with open(tab_path, 'w') as f:
               f.write(updated)
 
-          print(f'REGENERATED_TAB_PATH={tab_path}')
+          print(f'Done. Updated: {tab_path}')
           EOF
 
       - name: Commit regenerated file
