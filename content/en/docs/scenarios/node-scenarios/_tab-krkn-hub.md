@@ -38,9 +38,7 @@ $ docker inspect <container-name or container-id> \
 ```bash
 kubectl config view --flatten > ~/kubeconfig && chmod 444 ~/kubeconfig && docker run $(./get_docker_params.sh) --name=<container_name> --net=host -v ~/kubeconfig:/home/krkn/.kube/config:Z -d containers.krkn-chaos.dev/krkn-chaos/krkn-hub:<scenario>
 ```
-
 {{% /alert %}}
-
 
 #### Supported parameters
 
@@ -71,7 +69,6 @@ TIMEOUT                 | Duration to wait for completion of node scenario injec
 DURATION                | Duration to stop the node before running the start action - not supported for vmware and ibm cloud type             | number | 120                                |
 KUBE_CHECK       | Connect to the kubernetes api to see if the node gets to a certain state during the node scenario. Supported values: `true`, `false`   | enum | True                               |
 PARALLEL     | Run action on label or node name in parallel or sequential. Supported values: `true`, `false` | enum | False |
-DISABLE_SSL_VERIFICATION     | Disable SSL verification, to avoid certificate errors. Supported values: `true`, `false` | enum | False |
 VERIFY_SESSION           | Verify the SSH session during node scenarios                          | string | false                                |
 SKIP_OPENSHIFT_CHECKS    | Skip OpenShift-specific cluster checks (set to true for vanilla Kubernetes) | string | false                          |
 BMC_USER                 | Only needed for Baremetal ( bm ) - IPMI/bmc username | string | "" | 
@@ -79,6 +76,7 @@ BMC_PASSWORD             | Only needed for Baremetal ( bm ) - IPMI/bmc password 
 BMC_ADDR                 | Only needed for Baremetal ( bm ) - IPMI/bmc address | string | "" |
 DISKS                    | Comma-separated list of disks for baremetal disk detach/attach scenarios | string | ""                              |
 
+DISABLE_SSL_VERIFICATION       | (added upstream — review description) | enum | False |
 {{% alert title="Note" %}}In case of using custom metrics profile or alerts profile when `CAPTURE_METRICS` or `ENABLE_ALERTS` is enabled, mount the metrics profile from the host on which the container is run using podman/docker under `/home/krkn/kraken/config/metrics-aggregated.yaml` and `/home/krkn/kraken/config/alerts`. {{% /alert %}}
  For example:
 ```bash
@@ -104,22 +102,15 @@ $ export AWS_DEFAULT_REGION=<>
 VMware Vsphere
 ```bash
 $ export VSPHERE_IP=<vSphere_client_IP_address>
-
 $ export VSPHERE_USERNAME=<vSphere_client_username>
-
 $ export VSPHERE_PASSWORD=<vSphere_client_password>
 ```
 
-
-Ibmcloud 
+Ibmcloud
 ```bash
 $ export IBMC_URL=https://<region>.iaas.cloud.ibm.com/v1
-
 $ export IBMC_APIKEY=<ibmcloud_api_key>
 ```
-
-Baremetal <br/>
-Check [Bare Metal Documentation](node-scenarios-bm-krkn-hub.md)
 
 Google Cloud Platform
 ```bash
@@ -134,7 +125,6 @@ $ export AZURE_CLIENT_ID=<>
 ```
 
 OpenStack
-
 ```bash
 export OS_USERNAME=username
 export OS_PASSWORD=password
