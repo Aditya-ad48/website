@@ -80,6 +80,7 @@ BMC_ADDR                 | Only needed for Baremetal ( bm ) - IPMI/bmc address |
 DISKS                    | Comma-separated list of disks for baremetal disk detach/attach scenarios | string | ""                              |
 
 DISABLE_SSL_VERIFICATION       | (added upstream — review description) | enum | False |
+DISABLE_SSL_VERIFICATION       | (added upstream — review description) | enum | False |
 {{% alert title="Note" %}}In case of using custom metrics profile or alerts profile when `CAPTURE_METRICS` or `ENABLE_ALERTS` is enabled, mount the metrics profile from the host on which the container is run using podman/docker under `/home/krkn/kraken/config/metrics-aggregated.yaml` and `/home/krkn/kraken/config/alerts`. {{% /alert %}}
  For example:
 ```bash
